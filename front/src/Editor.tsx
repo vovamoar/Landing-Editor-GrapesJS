@@ -1,10 +1,10 @@
+import '@fortawesome/fontawesome-free/css/all.min.css'
 import axios from 'axios'
 import grapesjs from 'grapesjs'
 import grapesjsBlocksBootstrap4 from 'grapesjs-blocks-bootstrap4'
 import grapesjsComponentCountdown from 'grapesjs-component-countdown'
 import grapesjsCustomCode from 'grapesjs-custom-code'
 import grapesjsParserPostcss from 'grapesjs-parser-postcss'
-import grapesjsPluginCkeditor from 'grapesjs-plugin-ckeditor'
 import grapesjsPluginExport from 'grapesjs-plugin-export'
 import grapesjsPluginForms from 'grapesjs-plugin-forms'
 import grapesjsPresetWebpage from 'grapesjs-preset-webpage'
@@ -14,17 +14,26 @@ import grapesjsTooltip from 'grapesjs-tooltip'
 import grapesjsTuiImageEditor from 'grapesjs-tui-image-editor'
 import grapesjsTyped from 'grapesjs-typed'
 import 'grapesjs/dist/css/grapes.min.css'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 const Editor: React.FC = () => {
 	const [searchParams] = useSearchParams()
 	const siteName = searchParams.get('site')
 	const editorRef = useRef<any>(null)
+	const panelTopRef = useRef<HTMLDivElement>(null)
+	const [isPanelReady, setIsPanelReady] = useState(false) // State to track panel readiness
+
+	// Ensure the panel is ready before initializing GrapesJS
+	useEffect(() => {
+		if (panelTopRef.current) {
+			setIsPanelReady(true)
+		}
+	}, [])
 
 	// Инициализируем редактор
 	useEffect(() => {
-		if (!siteName) return
+		if (!siteName || !isPanelReady) return
 
 		// Загружаем HTML, CSS и изображения с бэкенда
 		axios
@@ -50,7 +59,6 @@ const Editor: React.FC = () => {
 						grapesjsTuiImageEditor,
 						grapesjsStyleBg,
 						grapesjsBlocksBootstrap4,
-						grapesjsPluginCkeditor,
 						grapesjsTabs,
 						grapesjsCustomCode,
 						grapesjsParserPostcss,
@@ -64,7 +72,7 @@ const Editor: React.FC = () => {
 						defaults: [
 							{
 								id: 'options',
-								el: '.panel__top',
+								el: panelTopRef.current!, // Use non-null assertion since we know it's ready
 								resizable: {
 									tc: true,
 									cr: true,
@@ -74,25 +82,25 @@ const Editor: React.FC = () => {
 								buttons: [
 									{
 										id: 'save',
-										className: 'fa fa-save',
+										className: 'fas fa-save', // Updated to Font Awesome 6 syntax
 										command: 'save-command',
 										attributes: { title: 'Save Changes' },
 									},
 									{
 										id: 'undo',
-										className: 'fa fa-undo',
+										className: 'fas fa-undo',
 										command: 'core:undo',
 										attributes: { title: 'Undo' },
 									},
 									{
 										id: 'redo',
-										className: 'fa fa-repeat',
+										className: 'fas fa-repeat',
 										command: 'core:redo',
 										attributes: { title: 'Redo' },
 									},
 									{
 										id: 'export',
-										className: 'fa fa-download',
+										className: 'fas fa-download',
 										command: 'export-template',
 										attributes: { title: 'Export Project' },
 									},
@@ -103,20 +111,20 @@ const Editor: React.FC = () => {
 								buttons: [
 									{
 										id: 'open-sm',
-										className: 'fa fa-paint-brush',
+										className: 'fas fa-paint-brush',
 										command: 'open-style-manager',
 										attributes: { title: 'Open Style Manager' },
 										active: true,
 									},
 									{
 										id: 'open-layers',
-										className: 'fa fa-bars',
+										className: 'fas fa-bars',
 										command: 'open-layer-manager',
 										attributes: { title: 'Open Layer Manager' },
 									},
 									{
 										id: 'open-blocks',
-										className: 'fa fa-th-large',
+										className: 'fas fa-th-large',
 										command: 'open-block-manager',
 										attributes: { title: 'Open Blocks' },
 									},
@@ -127,7 +135,7 @@ const Editor: React.FC = () => {
 
 					// Настраиваем Asset Manager для загрузки изображений через бэкенд
 					assetManager: {
-						assets: images || [], // Загружаем существующие изображения
+						assets: images || [],
 						upload: `http://localhost:3000/sites/${siteName}/upload-image`,
 						uploadName: 'image',
 						multiUpload: false,
@@ -156,7 +164,7 @@ const Editor: React.FC = () => {
 										name: files[0].name,
 										type: 'image',
 									}
-									editor.AssetManager.add(newAsset) // Добавляем новое изображение в Asset Manager
+									editor.AssetManager.add(newAsset)
 									return [newAsset]
 								})
 								.catch(err => {
@@ -182,19 +190,6 @@ const Editor: React.FC = () => {
 						blocks: {
 							bootstrap4Blocks: true,
 							bootstrap4Components: true,
-						},
-					},
-
-					// Настройки для grapesjs-plugin-ckeditor
-					ckeditor: {
-						options: {
-							language: 'en',
-							toolbar: [
-								['Bold', 'Italic', 'Underline', 'Strike'],
-								['NumberedList', 'BulletedList'],
-								['Link', 'Unlink'],
-								['Source'],
-							],
 						},
 					},
 
@@ -235,8 +230,8 @@ const Editor: React.FC = () => {
 
 						// Исправляем пути к изображениям в HTML перед сохранением
 						updatedHtml = updatedHtml.replace(
-							/src="\/sites\/[^\/]+\/images\/([^"]+)"/g,
-							`src="http://localhost:3000/sites/${siteName}/images/$1"`
+							/src="[^"]*\/sites\/[^\/]+\/images\/([^"]+)"/g,
+							`src="/sites/${siteName}/images/$1"`
 						)
 
 						console.log('Сохраняем изменения:', {
@@ -317,24 +312,17 @@ const Editor: React.FC = () => {
 				editorRef.current = null
 			}
 		}
-	}, [siteName])
+	}, [siteName, isPanelReady])
 
 	return (
 		<div className='flex flex-col h-screen'>
-			{/* Подключаем стили GrapesJS через CDN */}
 			<link
 				rel='stylesheet'
 				href='https://unpkg.com/grapesjs/dist/css/grapes.min.css'
 			/>
-			{/* Подключаем Bootstrap CSS для grapesjs-blocks-bootstrap4 */}
 			<link
 				rel='stylesheet'
 				href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'
-			/>
-			{/* Подключаем Font Awesome для иконок */}
-			<link
-				rel='stylesheet'
-				href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'
 			/>
 			<nav className='bg-gray-800 text-white p-4'>
 				<a href='/' className='mr-4'>
@@ -343,6 +331,7 @@ const Editor: React.FC = () => {
 				<a href='/page2.html'>Other page</a>
 			</nav>
 			<div
+				ref={panelTopRef}
 				className='panel__top'
 				style={{
 					display: 'flex',

@@ -46,6 +46,7 @@ const App = () => {
 								className='bg-transparent border-2 border-purple-500 text-purple-400 px-6 py-2 rounded-lg
 								hover:bg-purple-500 hover:text-white transition-all duration-300'
 							>
+								<i className='fas fa-eye mr-2'></i>
 								Preview
 							</button>
 							<button
@@ -53,6 +54,7 @@ const App = () => {
 								className='bg-transparent border-2 border-cyan-500 text-cyan-400 px-6 py-2 rounded-lg
 								hover:bg-cyan-500 hover:text-white transition-all duration-300'
 							>
+								<i className='fas fa-pencil-alt mr-2'></i>
 								Edit
 							</button>
 						</div>
