@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Landing Page</title>
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+	<header class="header">
+		<div class="header__container container">
+			<div class="header__logo logo">
+				<img class="logo__img" src="images/logo.webp" alt="Company Logo">
+			</div>
+			<nav class="header__nav nav">
+				<ul class="nav__list">
+					<li class="nav__item"><a class="nav__link" href="#home">Home</a></li>
+					<li class="nav__item"><a class="nav__link" href="#about">About</a></li>
+					<li class="nav__item"><a class="nav__link" href="#services">Services</a></li>
+					<li class="nav__item"><a class="nav__link" href="#contact">Contact</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<main class="main">
+		<section class="hero">
+			<div class="hero__container container">
+				<h1 class="hero__title">Welcome to Our Company</h1>
+				<p class="hero__text">We provide innovative solutions for your business</p>
+				<a href="#contact" class="hero__button button">Get Started</a>
+			</div>
+		</section>
+
+		<section class="services" id="services">
+			<div class="services__container container">
+				<h2 class="services__title">Our Services</h2>
+				<div class="services__grid">
+					<div class="services__item">
+						<h3 class="services__item-title">Service 1</h3>
+						<p class="services__item-text">Description of service 1</p>
+					</div>
+					<div class="services__item">
+						<h3 class="services__item-title">Service 2</h3>
+						<p class="services__item-text">Description of service 2</p>
+					</div>
+					<div class="services__item">
+						<h3 class="services__item-title">Service 3</h3>
+						<p class="services__item-text">Description of service 3</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="contact" id="contact">
+			<div class="contact__container container">
+				<h2 class="contact__title">Contact Us</h2>
+				<form class="contact__form form">
+					<div class="form__group">
+						<input type="text" class="form__input" placeholder="Your Name">
+					</div>
+					<div class="form__group">
+						<input type="email" class="form__input" placeholder="Your Email">
+					</div>
+					<div class="form__group">
+						<textarea class="form__textarea" placeholder="Your Message"></textarea>
+					</div>
+					<button type="submit" class="form__button button">Send Message</button>
+				</form>
+			</div>
+		</section>
+	</main>
+
+	<footer class="footer">
+		<div class="footer__container container">
+			<p class="footer__copyright">© 2024 Company Name. All rights reserved.</p>
+		</div>
+	</footer>
+	<script src="js/index.js"></script>
+</body>
+
+</html>

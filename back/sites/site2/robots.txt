@@ -1,0 +1,2 @@
+Host: https://TestArchive/
+Sitemap: https://TestArchive/sitemap.xml
